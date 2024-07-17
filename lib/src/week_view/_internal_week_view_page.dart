@@ -304,6 +304,9 @@ class _InternalWeekViewPageState<T extends Object?>
                             ),
                             child: Text(
                               widget.fullDayHeaderTitle,
+                              style: TextStyle(
+                                color: Colors.red,
+                              ),
                               textAlign:
                                   widget.fullDayHeaderTextConfig.textAlign,
                               maxLines: widget.fullDayHeaderTextConfig.maxLines,
