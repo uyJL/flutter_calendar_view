@@ -1,6 +1,5 @@
 import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 import '../app_colors.dart';
 import '../constants.dart';
@@ -349,14 +348,6 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
             margin: const EdgeInsets.symmetric(vertical: 20.0),
             height: 1.0,
             color: AppColors.bluishGrey,
-          ),
-          ColorPicker(
-            displayThumbColor: true,
-            enableAlpha: false,
-            pickerColor: _color,
-            onColorChanged: (c) {
-              color = c;
-            },
           ),
           Center(
             child: Padding(

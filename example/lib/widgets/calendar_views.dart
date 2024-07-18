@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 
 import '../app_colors.dart';
 import '../enumerations.dart';
-import 'day_view_widget.dart';
-import 'month_view_widget.dart';
 import 'week_view_widget.dart';
 
 class CalendarViews extends StatelessWidget {
@@ -25,17 +23,9 @@ class CalendarViews extends StatelessWidget {
       width: double.infinity,
       color: AppColors.grey,
       child: Center(
-        child: view == CalendarView.month
-            ? MonthViewWidget(
-                width: width,
-              )
-            : view == CalendarView.day
-                ? DayViewWidget(
-                    width: width,
-                  )
-                : WeekViewWidget(
-                    width: width,
-                  ),
+        child: WeekViewWidget(
+          width: width,
+        ),
       ),
     );
   }
