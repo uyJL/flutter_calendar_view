@@ -210,7 +210,7 @@ class DefaultEventTile<T> extends StatelessWidget {
     if (events.isNotEmpty) {
       final event = events[0];
       return RoundedEventTile(
-        borderRadius: BorderRadius.circular(10.0),
+        borderRadius: BorderRadius.circular(4),
         title: event.title,
         totalEvents: events.length - 1,
         description: event.description,
