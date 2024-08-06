@@ -14,12 +14,14 @@ class WeekViewWidget extends StatelessWidget {
     return WeekView(
       key: state,
       width: width,
+      dates: [],
       showLiveTimeLineInAllDays: true,
       heightPerMinute: 2.5,
       startHour: 0,
       endHour: 24,
       showQuarterHours: true,
       showHalfHours: true,
+      getCurrentPage: (_){},
       weekDays: [
         WeekDays.monday,
         WeekDays.wednesday,

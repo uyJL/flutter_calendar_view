@@ -240,6 +240,11 @@ class WeekView<T extends Object?> extends StatefulWidget {
   /// Flag to keep scrollOffset of pages on page change
   final bool keepScrollOffset;
 
+  /// Return currentPage
+  final Function(int) getCurrentPage;
+
+  final List<DateTime> dates;
+
   final String? testParam;
 
   /// Main widget for week view.
@@ -300,17 +305,16 @@ class WeekView<T extends Object?> extends StatefulWidget {
     this.fullDayHeaderTitle = '',
     this.fullDayHeaderTextConfig,
     this.keepScrollOffset = false,
+    required this.getCurrentPage,
+    required this.dates,
     this.testParam,
   })  : assert(!(onHeaderTitleTap != null && weekPageHeaderBuilder != null),
             "can't use [onHeaderTitleTap] & [weekPageHeaderBuilder] simultaneously"),
-        assert((timeLineOffset) >= 0,
-            "timeLineOffset must be greater than or equal to 0"),
-        assert(width == null || width > 0,
-            "Calendar width must be greater than 0."),
-        assert(timeLineWidth == null || timeLineWidth > 0,
-            "Time line width must be greater than 0."),
+        assert((timeLineOffset) >= 0, "timeLineOffset must be greater than or equal to 0"),
+        assert(width == null || width > 0, "Calendar width must be greater than 0."),
         assert(
-            heightPerMinute > 0, "Height per minute must be greater than 0."),
+            timeLineWidth == null || timeLineWidth > 0, "Time line width must be greater than 0."),
+        assert(heightPerMinute > 0, "Height per minute must be greater than 0."),
         assert(
           weekDetectorBuilder == null || onDateLongPress == null,
           """If you use [weekPressDetectorBuilder] 
@@ -388,8 +392,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     super.initState();
     _lastScrollOffset = widget.scrollOffset;
 
-    _scrollController =
-        ScrollController(initialScrollOffset: widget.scrollOffset);
+    _scrollController = ScrollController(initialScrollOffset: widget.scrollOffset);
 
     _startHour = widget.startHour;
     _endHour = widget.endHour;
@@ -410,16 +413,14 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
 
     _assignBuilders();
     _fullDayHeaderTitle = widget.fullDayHeaderTitle;
-    _fullDayHeaderTextConfig =
-        widget.fullDayHeaderTextConfig ?? FullDayHeaderTextConfig();
+    _fullDayHeaderTextConfig = widget.fullDayHeaderTextConfig ?? FullDayHeaderTextConfig();
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    final newController = widget.controller ??
-        CalendarControllerProvider.of<T>(context).controller;
+    final newController = widget.controller ?? CalendarControllerProvider.of<T>(context).controller;
 
     if (_controller != newController) {
       _controller = newController;
@@ -438,8 +439,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   void didUpdateWidget(WeekView<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
     // Update controller.
-    final newController = widget.controller ??
-        CalendarControllerProvider.of<T>(context).controller;
+    final newController = widget.controller ?? CalendarControllerProvider.of<T>(context).controller;
 
     if (newController != _controller) {
       _controller?.removeListener(_reloadCallback);
@@ -450,8 +450,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     _setWeekDays();
 
     // Update date range.
-    if (widget.minDay != oldWidget.minDay ||
-        widget.maxDay != oldWidget.maxDay) {
+    if (widget.minDay != oldWidget.minDay || widget.maxDay != oldWidget.maxDay) {
       _setDateRange();
       _regulateCurrentDate();
 
@@ -503,15 +502,14 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                       physics: widget.pageViewPhysics,
                       onPageChanged: _onPageChange,
                       itemBuilder: (_, index) {
-                        final dates = DateTime(_minDate.year, _minDate.month,
-                                _minDate.day + (index * DateTime.daysPerWeek))
-                            .datesOfWeek(start: widget.startDay);
-
+                        // var dates = DateTime(_minDate.year, _minDate.month,
+                        //     _minDate.day + (index * 3))
+                        //     .datesOfWeek(start: widget.startDay);
+                        //dates = [dates[0], dates[1], dates[2]];
                         return ValueListenableBuilder(
                           valueListenable: _scrollConfiguration,
                           builder: (_, __, ___) => InternalWeekViewPage<T>(
-                            key: ValueKey(
-                                _hourHeight.toString() + dates[0].toString()),
+                            key: ValueKey(_hourHeight.toString() + widget.dates[0].toString()),
                             height: _height,
                             width: _width,
                             weekTitleWidth: _weekTitleWidth,
@@ -519,8 +517,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                             weekDayBuilder: _weekDayBuilder,
                             weekNumberBuilder: _weekNumberBuilder,
                             weekDetectorBuilder: _weekDetectorBuilder,
-                            liveTimeIndicatorSettings:
-                                _liveTimeIndicatorSettings,
+                            liveTimeIndicatorSettings: _liveTimeIndicatorSettings,
                             timeLineBuilder: _timeLineBuilder,
                             onTileTap: widget.onEventTap,
                             onTileLongTap: widget.onEventLongTap,
@@ -531,13 +528,11 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                             heightPerMinute: widget.heightPerMinute,
                             hourIndicatorSettings: _hourIndicatorSettings,
                             hourLinePainter: _hourLinePainter,
-                            halfHourIndicatorSettings:
-                                _halfHourIndicatorSettings,
-                            quarterHourIndicatorSettings:
-                                _quarterHourIndicatorSettings,
-                            dates: dates,
+                            halfHourIndicatorSettings: _halfHourIndicatorSettings,
+                            quarterHourIndicatorSettings: _quarterHourIndicatorSettings,
+                            dates: widget.dates,
                             showLiveLine: widget.showLiveTimeLineInAllDays ||
-                                _showLiveTimeIndicator(dates),
+                                _showLiveTimeIndicator(widget.dates),
                             timeLineOffset: widget.timeLineOffset,
                             timeLineWidth: _timeLineWidth,
                             verticalLineOffset: 0,
@@ -553,8 +548,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                             startHour: _startHour,
                             showHalfHours: widget.showHalfHours,
                             showQuarterHours: widget.showQuarterHours,
-                            emulateVerticalOffsetBy:
-                                widget.emulateVerticalOffsetBy,
+                            emulateVerticalOffsetBy: widget.emulateVerticalOffsetBy,
                             showWeekDayAtBottom: widget.showWeekDayAtBottom,
                             endHour: _endHour,
                             fullDayHeaderTitle: _fullDayHeaderTitle,
@@ -635,9 +629,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     assert(_hourIndicatorSettings.height < _hourHeight,
         "hourIndicator height must be less than minuteHeight * 60");
 
-    _weekTitleWidth =
-        (_width - _timeLineWidth - _hourIndicatorSettings.offset) /
-            _totalDaysInWeek;
+    _weekTitleWidth = (_width - _timeLineWidth - _hourIndicatorSettings.offset) / _totalDaysInWeek;
 
     _halfHourIndicatorSettings = widget.halfHourIndicatorSettings ??
         HourIndicatorSettings(
@@ -666,19 +658,15 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   void _assignBuilders() {
     _timeLineBuilder = widget.timeLineBuilder ?? _defaultTimeLineBuilder;
     _eventTileBuilder = widget.eventTileBuilder ?? _defaultEventTileBuilder;
-    _weekHeaderBuilder =
-        widget.weekPageHeaderBuilder ?? _defaultWeekPageHeaderBuilder;
+    _weekHeaderBuilder = widget.weekPageHeaderBuilder ?? _defaultWeekPageHeaderBuilder;
     _weekDayBuilder = widget.weekDayBuilder ?? _defaultWeekDayBuilder;
-    _weekDetectorBuilder =
-        widget.weekDetectorBuilder ?? _defaultPressDetectorBuilder;
+    _weekDetectorBuilder = widget.weekDetectorBuilder ?? _defaultPressDetectorBuilder;
     _weekNumberBuilder = widget.weekNumberBuilder ?? _defaultWeekNumberBuilder;
-    _fullDayEventBuilder =
-        widget.fullDayEventBuilder ?? _defaultFullDayEventBuilder;
+    _fullDayEventBuilder = widget.fullDayEventBuilder ?? _defaultFullDayEventBuilder;
     _hourLinePainter = widget.hourLinePainter ?? _defaultHourLinePainter;
   }
 
-  Widget _defaultFullDayEventBuilder(
-      List<CalendarEventData<T>> events, DateTime dateTime) {
+  Widget _defaultFullDayEventBuilder(List<CalendarEventData<T>> events, DateTime dateTime) {
     return FullDayEventView(
       events: events,
       boxConstraints: BoxConstraints(maxHeight: 65),
@@ -706,8 +694,8 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
 
     _currentStartDate = _currentWeek.firstDayOfWeek(start: widget.startDay);
     _currentEndDate = _currentWeek.lastDayOfWeek(start: widget.startDay);
-    _currentIndex =
-        _minDate.getWeekDifference(_currentEndDate, start: widget.startDay);
+    _currentIndex = _minDate.getWeekDifference(_currentEndDate, start: widget.startDay);
+    widget.getCurrentPage(_currentIndex);
   }
 
   /// Sets the minimum and maximum dates for current view.
@@ -726,8 +714,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
       "Provided minimum date: $_minDate, maximum date: $_maxDate",
     );
 
-    _totalWeeks =
-        _minDate.getWeekDifference(_maxDate, start: widget.startDay) + 1;
+    _totalWeeks = _minDate.getWeekDifference(_maxDate, start: widget.startDay) + 1;
   }
 
   /// Default press detector builder. This builder will be used if
@@ -760,8 +747,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
         children: [
           Text(widget.weekDayStringBuilder?.call(date.weekday - 1) ??
               Constants.weekTitles[date.weekday - 1]),
-          Text(widget.weekDayDateStringBuilder?.call(date.day) ??
-              date.day.toString()),
+          Text(widget.weekDayDateStringBuilder?.call(date.day) ?? date.day.toString()),
         ],
       ),
     );
@@ -773,8 +759,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     final thursday = daysToAdd > 0
         ? date.add(Duration(days: daysToAdd))
         : date.subtract(Duration(days: daysToAdd.abs()));
-    final weekNumber =
-        (date.difference(DateTime(thursday.year)).inDays / 7).floor() + 1;
+    final weekNumber = (date.difference(DateTime(thursday.year)).inDays / 7).floor() + 1;
     return Center(
       child: Text("$weekNumber"),
     );
@@ -873,9 +858,9 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
         _currentStartDate = DateTime(
           _currentStartDate.year,
           _currentStartDate.month,
-          _currentStartDate.day + (index - _currentIndex) * 7,
+          _currentStartDate.day + (index - _currentIndex) * 3,
         );
-        _currentEndDate = _currentStartDate.add(Duration(days: 6));
+        _currentEndDate = _currentStartDate.add(Duration(days: 3));
         _currentIndex = index;
       });
     }
@@ -916,8 +901,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   /// Arguments [duration] and [curve] will override default values provided
   /// as [DayView.pageTransitionDuration] and [DayView.pageTransitionCurve]
   /// respectively.
-  Future<void> animateToPage(int page,
-      {Duration? duration, Curve? curve}) async {
+  Future<void> animateToPage(int page, {Duration? duration, Curve? curve}) async {
     await _pageController.animateToPage(page,
         duration: duration ?? widget.pageTransitionDuration,
         curve: curve ?? widget.pageTransitionCurve);
@@ -931,8 +915,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
     if (week.isBefore(_minDate) || week.isAfter(_maxDate)) {
       throw "Invalid date selected.";
     }
-    _pageController
-        .jumpToPage(_minDate.getWeekDifference(week, start: widget.startDay));
+    _pageController.jumpToPage(_minDate.getWeekDifference(week, start: widget.startDay));
   }
 
   /// Animate to page which gives day calendar for [week].
@@ -940,8 +923,7 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   /// Arguments [duration] and [curve] will override default values provided
   /// as [WeekView.pageTransitionDuration] and [WeekView.pageTransitionCurve]
   /// respectively.
-  Future<void> animateToWeek(DateTime week,
-      {Duration? duration, Curve? curve}) async {
+  Future<void> animateToWeek(DateTime week, {Duration? duration, Curve? curve}) async {
     if (week.isBefore(_minDate) || week.isAfter(_maxDate)) {
       throw "Invalid date selected.";
     }
@@ -953,8 +935,8 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   }
 
   /// Returns the current visible week's first date.
-  DateTime get currentDate => DateTime(
-      _currentStartDate.year, _currentStartDate.month, _currentStartDate.day);
+  DateTime get currentDate =>
+      DateTime(_currentStartDate.year, _currentStartDate.month, _currentStartDate.day);
 
   /// Jumps to page which contains given events and make event
   /// tile visible to user.

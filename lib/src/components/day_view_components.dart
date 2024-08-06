@@ -74,6 +74,7 @@ class RoundedEventTile extends StatelessWidget {
             Expanded(
               child: Row(
                 mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Icon(Icons.home),
                   const SizedBox(width: 2),
@@ -81,7 +82,8 @@ class RoundedEventTile extends StatelessWidget {
                     title,
                     style: titleStyle ??
                         TextStyle(
-                          fontSize: 20,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w500,
                           color: backgroundColor.accent,
                         ),
                     softWrap: true,

@@ -275,10 +275,10 @@ class _InternalWeekViewPageState<T extends Object?>
               ],
             ),
           ),
-          Divider(
-            thickness: 1,
-            height: 1,
-          ),
+          // Divider(
+          //   thickness: 1,
+          //   height: 1,
+          // ),
           SizedBox(
             width: widget.width,
             child: Container(
@@ -488,6 +488,7 @@ class _InternalWeekViewPageState<T extends Object?>
     );
   }
 
+  /// week day header
   List<DateTime> _filteredDate() {
     final output = <DateTime>[];
 
