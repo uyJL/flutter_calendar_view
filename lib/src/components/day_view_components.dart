@@ -17,6 +17,9 @@ class RoundedEventTile extends StatelessWidget {
   /// Title of the tile.
   final String title;
 
+  ///
+  final Widget icon;
+
   /// Description of the tile.
   final String? description;
 
@@ -47,6 +50,7 @@ class RoundedEventTile extends StatelessWidget {
   const RoundedEventTile({
     Key? key,
     required this.title,
+    required this.icon,
     this.padding = EdgeInsets.zero,
     this.margin = EdgeInsets.zero,
     this.description,
@@ -71,26 +75,29 @@ class RoundedEventTile extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           if (title.isNotEmpty)
-            Expanded(
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Icon(Icons.home),
-                  const SizedBox(width: 2),
-                  Text(
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                //Icon(Icons.home),
+                icon,
+                const SizedBox(width: 4),
+                Container(
+                  height: 16,
+                  alignment: Alignment.center,
+                  child: Text(
                     title,
                     style: titleStyle ??
                         TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w500,
+                          fontSize: 10,
+                          fontWeight: FontWeight.w600,
                           color: backgroundColor.accent,
                         ),
                     softWrap: true,
                     overflow: TextOverflow.fade,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           if (description?.isNotEmpty ?? false)
             Expanded(

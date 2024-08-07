@@ -26,6 +26,9 @@ class CalendarEventData<T extends Object?> {
   /// Title of the event.
   final String title;
 
+  /// Icon
+  final Widget icon;
+
   /// Description of the event.
   final String? description;
 
@@ -47,6 +50,7 @@ class CalendarEventData<T extends Object?> {
   /// {@macro calendar_event_data_doc}
   CalendarEventData({
     required this.title,
+    required this.icon,
     required DateTime date,
     this.description,
     this.event,
@@ -108,6 +112,7 @@ class CalendarEventData<T extends Object?> {
   ///
   CalendarEventData<T> copyWith({
     String? title,
+    Widget? icon,
     String? description,
     T? event,
     Color? color,
@@ -120,6 +125,7 @@ class CalendarEventData<T extends Object?> {
   }) {
     return CalendarEventData(
       title: title ?? this.title,
+      icon: icon ?? this.icon,
       date: date ?? this.date,
       startTime: startTime ?? this.startTime,
       endTime: endTime ?? this.endTime,

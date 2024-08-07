@@ -291,6 +291,7 @@ class _AddOrEditEventFormState extends State<AddOrEditEventForm> {
       endDate: _endDate,
       color: _color,
       title: _titleController.text.trim(),
+      icon: '',
       description: _descriptionController.text.trim(),
     );
 
