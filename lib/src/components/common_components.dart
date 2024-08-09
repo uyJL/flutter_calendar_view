@@ -215,7 +215,7 @@ class DefaultEventTile<T> extends StatelessWidget {
         icon: event.icon,
         totalEvents: events.length - 1,
         description: event.description,
-        padding: EdgeInsets.all(4.0),
+        padding: EdgeInsets.all(2.0),
         backgroundColor: event.color,
         margin: EdgeInsets.all(2.0),
         titleStyle: event.titleStyle,

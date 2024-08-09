@@ -70,60 +70,26 @@ class RoundedEventTile extends StatelessWidget {
         color: backgroundColor,
         borderRadius: borderRadius,
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
         mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (title.isNotEmpty)
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                //Icon(Icons.home),
-                icon,
-                const SizedBox(width: 4),
-                Container(
-                  height: 16,
-                  alignment: Alignment.center,
-                  child: Text(
-                    title,
-                    style: titleStyle ??
-                        TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w600,
-                          color: backgroundColor.accent,
-                        ),
-                    softWrap: true,
-                    overflow: TextOverflow.fade,
+          //Icon(Icons.home),
+          icon,
+          const SizedBox(width: 4),
+          Expanded(
+            child: Text(
+              title,
+              style: titleStyle ??
+                  TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w600,
+                    color: backgroundColor.accent,
                   ),
-                ),
-              ],
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
             ),
-          if (description?.isNotEmpty ?? false)
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 15.0),
-                child: Text(
-                  description!,
-                  style: descriptionStyle ??
-                      TextStyle(
-                        fontSize: 17,
-                        color: backgroundColor.accent.withAlpha(200),
-                      ),
-                ),
-              ),
-            ),
-          if (totalEvents > 1)
-            Expanded(
-              child: Text(
-                "+${totalEvents - 1} more",
-                style: (descriptionStyle ??
-                        TextStyle(
-                          color: backgroundColor.accent.withAlpha(200),
-                        ))
-                    .copyWith(fontSize: 17),
-              ),
-            ),
+          ),
         ],
       ),
     );
